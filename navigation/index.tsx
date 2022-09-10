@@ -11,11 +11,12 @@ import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
+import CreatePinScreen from '../screens/CreatePin';
 import HomeScreen from '../screens/HomeScreen';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import PinScreen from '../screens/PinScreen';
-import { default as ProfileScreen, default as TabTwoScreen } from '../screens/ProfileScreen';
+import { default as ProfileScreen } from '../screens/ProfileScreen';
 import { RootStackParamList, RootTabParamList } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -66,9 +67,9 @@ function BottomTabNavigator () {
       />
       <BottomTab.Screen
         name="CreatePin"
-        component={TabTwoScreen}
+        component={CreatePinScreen}
         options={{
-          title: 'Profile',
+          title: 'Create Pin',
           tabBarIcon: ({ color }) => <FontAwesome name="plus" color={color} size={30} />,
         }}
       />
