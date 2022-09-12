@@ -18,6 +18,7 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import PinScreen from '../screens/PinScreen';
 import { default as ProfileScreen } from '../screens/ProfileScreen';
 import { RootStackParamList, RootTabParamList } from '../types';
+import AuthStackNavigator from './AuthStackNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
 
 export default function Navigation ({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -35,6 +36,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator () {
   return (
     <Stack.Navigator>
+      <Stack.Screen name="Auth" component={AuthStackNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="Pin" component={PinScreen} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
