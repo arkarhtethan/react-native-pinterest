@@ -30,7 +30,6 @@ export default function ProfileScreen () {
   const fetchUserData = async () => {
     const result = await nhost.graphql.request(GET_USER_QUERY, { id: userId })
     if (result.error) {
-      console.log(result.error)
       Alert.alert("Error fetching the user")
     } else {
       setUser(result.data.user)
