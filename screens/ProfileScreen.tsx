@@ -1,15 +1,21 @@
 import { Entypo, Feather } from '@expo/vector-icons';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { useSignOut } from '@nhost/react';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import pins from '../assets/data/pins';
 import MasonryList from '../components/MasonryList';
 import { Text } from '../components/Themed';
 
 export default function ProfileScreen () {
+
+  const { signOut } = useSignOut()
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.icons}>
-          <Feather name="share" size={24} color="black" style={styles.icon} />
+          <Pressable onPress={signOut}>
+            <Feather name="share" size={24} color="black" style={styles.icon} />
+          </Pressable>
           <Entypo name="dots-three-horizontal" size={24} color="black" style={styles.icon} />
         </View>
         <Image style={styles.image} source={{ uri: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/vadim.png" }} />

@@ -3,14 +3,13 @@ import { useNhostClient } from '@nhost/react'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import RemoteImage from '../components/RemoteImage'
 
 const PinScreen = () => {
     const { params } = useRoute()
     const nhost = useNhostClient()
-    const [ratio, setRatio] = useState(1);
-
     const [pin, setPin] = useState(null);
 
     const navigation = useNavigation()
@@ -21,7 +20,6 @@ const PinScreen = () => {
     const goBack = () => {
         navigation.goBack()
     }
-
     const fetchPin = async (pinID) => {
         const response = await nhost.graphql.request(
             GET_PIN_QUERY, { id: pinID }
@@ -37,13 +35,6 @@ const PinScreen = () => {
         fetchPin(pinId)
     }, [])
 
-
-    useEffect(() => {
-        if (pin?.image) {
-            Image.getSize(pin.image, (width, height) => setRatio(width / height))
-        }
-    }, [pin])
-
     if (!pin) {
         return <Text>Pin not found.</Text>
     }
@@ -52,7 +43,7 @@ const PinScreen = () => {
         <SafeAreaView style={{ backgroundColor: "black" }}>
             <StatusBar style='light' />
             <View style={styles.root}>
-                <Image source={{ uri: pin.image }} style={[styles.image, { aspectRatio: ratio }]} />
+                <RemoteImage fileId={pin.image} />
                 <Text style={styles.title}>{pin.title}</Text>
             </View>
             <Pressable onPress={goBack} style={[styles.backBtn, { top: insets.top + 20 }]} >

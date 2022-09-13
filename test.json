@@ -1,0 +1,9 @@
+[
+    {
+        "extensions": {
+            "code": "validation-failed",
+            "path": "$.selectionSet.pins"
+        },
+        "message": "field 'pins' not found in type: 'query_root'"
+    }
+]

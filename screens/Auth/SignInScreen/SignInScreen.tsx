@@ -1,27 +1,31 @@
-import {
-  View,
-  Image,
-  StyleSheet,
-  useWindowDimensions,
-  ScrollView,
-  TextInput,
-} from "react-native";
-import Logo from "./logo.png";
-import CustomButton from "../components/CustomButton";
-import SocialSignInButtons from "../components/SocialSignInButtons";
+import { useNhostClient } from "@nhost/react";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import {
+  Alert,
+  Image, ScrollView, StyleSheet, TextInput, useWindowDimensions, View
+} from "react-native";
+import CustomButton from "../components/CustomButton";
+import SocialSignInButtons from "../components/SocialSignInButtons";
+import Logo from "./logo.png";
 
 const SignInScreen = () => {
+  const nhost = useNhostClient()
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const onSignInPressed = () => {
-    console.log(data);
-    // validate user
-    // navigation.navigate('Home');
+    const result = nhost.auth.signIn({
+      email,
+      password,
+    });
+    if (result.error) {
+      Alert.alert("Error signing up", result.error.message)
+    } else {
+      navigation.navigate("Home");
+    }
   };
 
   const onForgotPasswordPressed = () => {

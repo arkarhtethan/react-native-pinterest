@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
 import Pin from "./Pin";
 
 interface IMasonryList {
@@ -7,13 +7,18 @@ interface IMasonryList {
         image: string,
         title: string,
     }[],
+    onRefresh?: () => void,
+    refreshing?: boolean
 }
 
-export default function MasonryList ({ pins }: IMasonryList) {
+export default function MasonryList ({ pins, onRefresh, refreshing }: IMasonryList) {
     const width = useWindowDimensions().width;
     const numColumns = Math.ceil(width / 350);
+
     return (
-        <ScrollView>
+        <ScrollView refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
             <View style={styles.container}>
                 {Array.from(Array(numColumns)).map((col, colIndex) => (
                     <View style={styles.column} key={colIndex}>

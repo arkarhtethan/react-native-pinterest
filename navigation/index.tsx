@@ -4,11 +4,12 @@
  *
  */
 import { FontAwesome } from '@expo/vector-icons';
+import { useAuthenticationStatus } from '@nhost/react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName } from 'react-native';
+import { ActivityIndicator, ColorSchemeName } from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import CreatePinScreen from '../screens/CreatePin';
@@ -34,15 +35,25 @@ export default function Navigation ({ colorScheme }: { colorScheme: ColorSchemeN
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator () {
+  const { isLoading, isAuthenticated } = useAuthenticationStatus()
+  if (isLoading) {
+    return <ActivityIndicator />
+  }
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Auth" component={AuthStackNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="Pin" component={PinScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
+      {isAuthenticated ?
+        <>
+          <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+          <Stack.Screen name="Pin" component={PinScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+          <Stack.Group screenOptions={{ presentation: 'modal' }}>
+            <Stack.Screen name="Modal" component={ModalScreen} />
+          </Stack.Group>
+        </>
+        :
+        <Stack.Screen name="Auth" component={AuthStackNavigator} options={{ headerShown: false }} />
+      }
+
     </Stack.Navigator>
   );
 }
