@@ -1,13 +1,49 @@
 import { Entypo, Feather } from '@expo/vector-icons';
-import { useSignOut } from '@nhost/react';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import pins from '../assets/data/pins';
+import { useNhostClient, useSignOut, useUserId } from '@nhost/react';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import MasonryList from '../components/MasonryList';
 import { Text } from '../components/Themed';
 
-export default function ProfileScreen () {
+const GET_USER_QUERY = `
+query MyQuery($id:uuid!) {
+  user(id: $id) {
+    displayName
+    avatarUrl
+    id
+    pins {
+      id
+      image
+      title
+      created_at
+    }
+  }
+}
+`
 
+export default function ProfileScreen () {
+  const userId = useUserId()
   const { signOut } = useSignOut()
+  const nhost = useNhostClient()
+  const [user, setUser] = useState();
+
+  const fetchUserData = async () => {
+    const result = await nhost.graphql.request(GET_USER_QUERY, { id: userId })
+    if (result.error) {
+      console.log(result.error)
+      Alert.alert("Error fetching the user")
+    } else {
+      setUser(result.data.user)
+    }
+  }
+
+  useEffect(() => {
+    fetchUserData()
+  }, [])
+
+  if (!user) {
+    return <ActivityIndicator />
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -18,11 +54,11 @@ export default function ProfileScreen () {
           </Pressable>
           <Entypo name="dots-three-horizontal" size={24} color="black" style={styles.icon} />
         </View>
-        <Image style={styles.image} source={{ uri: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/vadim.png" }} />
-        <Text style={styles.title}>Kaung Myat Han</Text>
+        <Image style={styles.image} source={{ uri: user.avatarUrl }} />
+        <Text style={styles.title}>{user.displayName}</Text>
         <Text style={styles.subtitle}>123 Followers | 534 Followings</Text>
       </View>
-      <MasonryList pins={pins} />
+      <MasonryList pins={user.pins} onRefresh={fetchUserData} />
     </ScrollView>
   );
 }
